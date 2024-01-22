@@ -14,7 +14,7 @@ if ($_GET['action']== "connexion"){
             // Connecté avec succès
             $message = "Connexion réussie. Bienvenue, $nomUtilisateur!";
             // Ici, vous pouvez rediriger vers une page sécurisée ou gérer la session
-            include_once 'Vue/index.php';
+            header('Location: http://localhost/procedurale-code-poo/projet/index.php?action=home');
         } else {
             // Échec de la connexion
             $message = "Échec de la connexion. Veuillez vérifier vos identifiants.";
