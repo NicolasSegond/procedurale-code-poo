@@ -13,19 +13,23 @@ class UtilisateursModel{
     }
 
     function inscrireUtilisateur($nomUtilisateur, $motDePasse)
-{
-
-    $nomUtilisateur = $nomUtilisateur; // real merde
-    $motDePasseHash = password_hash($motDePasse, PASSWORD_DEFAULT);
-
-    $query = "INSERT INTO Utilisateur (nom_utilisateur, mot_de_passe) VALUES ('$nomUtilisateur', '$motDePasseHash')";
-    var_dump($this->connection->query($query));
-    if ($this->connection->query($query) === TRUE) {
-        echo "Nouvel utilisateur inscrit avec succès";
-    } else {
-        echo "Erreur : " . $query . "<br>" . $this->connection->error;
+    {
+        // Utilisation de la méthode prepare pour créer une requête préparée
+        $query = "INSERT INTO Utilisateur (nom_utilisateur, mot_de_passe) VALUES (:nom_utilisateur, :mot_de_passe)";
+        $stmt = $this->connection->prepare($query);
+    
+        // Liage des paramètres
+        $stmt->bindParam(':nom_utilisateur', $nomUtilisateur);
+        $stmt->bindParam(':mot_de_passe', password_hash($motDePasse, PASSWORD_DEFAULT));
+    
+        // Exécution de la requête préparée
+        if ($stmt->execute()) {
+            echo "Nouvel utilisateur inscrit avec succès";
+        } else {
+            echo "Erreur : " . $query . "<br>" . $stmt->errorInfo()[2];
+        }
     }
-}
+    
 
 function connecterUtilisateur($nomUtilisateur, $motDePasse)
 {
