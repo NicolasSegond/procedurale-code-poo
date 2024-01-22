@@ -1,26 +1,37 @@
 <?php
 
 class Database {
-    private $host;
-    private $username;
-    private $password;
-    private $database;
-    private $connection;
+    private static $instance = null;
+    private static $host;
+    private static $username;
+    private static $password;
+    private static $database;
+    private static $connection;
 
-    public function __construct($host, $username, $password, $database) {
-        $this->host = $host;
-        $this->username = $username;
-        $this->password = $password;
-        $this->database = $database;
-
+    private function __construct() {
+        // Constructeur privé pour empêcher l'instanciation directe
         $this->connect();
+    }
+
+    public static function setConfig($host, $username, $password, $database) {
+        self::$host = $host;
+        self::$username = $username;
+        self::$password = $password;
+        self::$database = $database;
+    }
+
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
     }
 
     private function connect() {
         try {
-            $this->connection = new PDO("mysql:host={$this->host};dbname={$this->database}", $this->username, $this->password);
+            self::$connection = new PDO("mysql:host=" . self::$host . ";dbname=" . self::$database, self::$username, self::$password);
             // Configurer PDO pour lever les exceptions en cas d'erreur
-            $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             echo "Connexion à la base de données réussie.";
         } catch (PDOException $e) {
             die("Erreur de connexion à la base de données : " . $e->getMessage());
@@ -28,23 +39,27 @@ class Database {
     }
 
     public function getConnection() {
-        return $this->connection;
+        return self::$connection;
     }
 
     public function disconnect() {
-        $this->connection = null;
+        self::$connection = null;
         echo "Déconnexion de la base de données réussie.";
     }
 }
 
-// Utilisation de la classe
+// Configuration des informations de connexion
 $databaseHost = "www.masterit-industries.eu";
 $databaseUsername = "mathis";
 $databasePassword = "coussette";
 $databaseName = "CESI_Proc_POO";
 
-$database = new Database($databaseHost, $databaseUsername, $databasePassword, $databaseName);
+Database::setConfig($databaseHost, $databaseUsername, $databasePassword, $databaseName);
 
+// Utilisation de la classe sans instanciation explicite
+$database = Database::getInstance();
+
+// Vous pouvez maintenant utiliser $database partout dans votre application sans réinstancier.
 /*
 try {
     // Sélection de données avec SELECT
