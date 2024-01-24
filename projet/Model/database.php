@@ -32,7 +32,7 @@ class Database {
             self::$connection = new PDO("mysql:host=" . self::$host . ";dbname=" . self::$database, self::$username, self::$password);
             // Configurer PDO pour lever les exceptions en cas d'erreur
             self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            echo "Connexion à la base de données réussie.";
+         //   echo "Connexion à la base de données réussie.";
         } catch (PDOException $e) {
             die("Erreur de connexion à la base de données : " . $e->getMessage());
         }
@@ -44,7 +44,7 @@ class Database {
 
     public function disconnect() {
         self::$connection = null;
-        echo "Déconnexion de la base de données réussie.";
+        //echo "Déconnexion de la base de données réussie.";
     }
 }
 

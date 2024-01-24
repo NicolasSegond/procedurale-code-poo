@@ -2,7 +2,6 @@
 
 require_once("Model/database.php");
 
-
 $action = $_GET['action'];
 
 if(!isset($_GET['action'])) {
